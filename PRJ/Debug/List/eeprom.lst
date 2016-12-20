@@ -1,0 +1,97 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.41.1.50116 for STM8             20/Oct/2016  15:22:21 #
+# Copyright 2010-2013 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\USER\eeprom. #
+#                    c                                                        #
+#    Command line =  D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\USER\eeprom. #
+#                    c -e -On --no_cse --no_unroll --no_inline                #
+#                    --no_code_motion --no_tbaa --no_cross_call --debug       #
+#                    --code_model medium --data_model medium -o               #
+#                    D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\PRJ\Debug\Ob #
+#                    j\ --dlib_config D:\EF_proj\STM8\IAR\STM8_1.4\stm8\LIB\d #
+#                    lstm8mmn.h -D STM8L15X_MD -lcN                           #
+#                    D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\PRJ\Debug\Li #
+#                    st\ -I D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\PRJ\. #
+#                    .\LIB\STM8L15x_StdPeriph_Driver\inc\ -I                  #
+#                    D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\PRJ\..\USER\ #
+#                     --vregs 16                                              #
+#    List file    =  D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\PRJ\Debug\Li #
+#                    st\eeprom.lst                                            #
+#    Object file  =  D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\PRJ\Debug\Ob #
+#                    j\eeprom.o                                               #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\USER\eeprom.c
+      1          /*
+      2           * Copyright 2010 IAR Systems AB.
+      3           *
+      4           * Permission to use, copy, modify, and distribute this software for any
+      5           * purpose with or without fee is hereby granted, provided that the above
+      6           * copyright notice and this permission notice appear in all copies.
+      7           *
+      8           * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+      9           * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+     10           * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+     11           * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+     12           * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+     13           * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+     14           * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+     15           */
+     16          
+     17          #include "stm8l15x_flash.h"
+     18          
+     19          /*
+     20           * The user must implement the three extern-declared functions below
+     21           * in order for the compiler to be able to automatically write to the
+     22           * EEPROM memory when __eeprom variables are assigned to.
+     23           */
+     24          
+     25          
+     26          /*
+     27           * Wait for the last data EEPROM operation to finish.  Return 0 if the
+     28           * operation failed, otherwise non-zero.  You may want to handle
+     29           * errors here, since the utility functions below simply ignore
+     30           * errors, aborting multi-write operations early.
+     31           */
+     32          int __eeprom_wait_for_last_operation(void)
+     33          {
+     34            FLASH_Status_TypeDef status = FLASH_WaitForLastOperation(FLASH_MemType_Data);
+     35            return !!(status & (  FLASH_Status_Successful_Operation));
+     36          }
+     37          
+     38          /*
+     39           * Write one byte to the data EEPROM memory.
+     40           */
+     41          void __eeprom_program_byte(unsigned char __near * dst, unsigned char v)
+     42          {
+     43            FLASH_ProgramByte((u32)dst, (u8)v);
+     44          }
+     45          
+     46          /*
+     47           * Write one 4-byte long word to the data EEPROM memory.  The address
+     48           * must be 4-byte aligned.
+     49           */
+     50          void __eeprom_program_long(unsigned char __near * dst, unsigned long v)
+     51          {
+     52            FLASH_ProgramWord((u32)dst, (u32)v);
+     53          }
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      31  __eeprom_program_byte
+      33  __eeprom_program_long
+      20  __eeprom_wait_for_last_operation
+
+ 
+ 84 bytes in section .far_func.text
+ 
+ 84 bytes of CODE memory
+
+Errors: none
+Warnings: none

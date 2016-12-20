@@ -1,0 +1,116 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.41.1.50116 for STM8             20/Oct/2016  15:22:21 #
+# Copyright 2010-2013 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\USER\NvramOp #
+#                    .c                                                       #
+#    Command line =  D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\USER\NvramOp #
+#                    .c -e -On --no_cse --no_unroll --no_inline               #
+#                    --no_code_motion --no_tbaa --no_cross_call --debug       #
+#                    --code_model medium --data_model medium -o               #
+#                    D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\PRJ\Debug\Ob #
+#                    j\ --dlib_config D:\EF_proj\STM8\IAR\STM8_1.4\stm8\LIB\d #
+#                    lstm8mmn.h -D STM8L15X_MD -lcN                           #
+#                    D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\PRJ\Debug\Li #
+#                    st\ -I D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\PRJ\. #
+#                    .\LIB\STM8L15x_StdPeriph_Driver\inc\ -I                  #
+#                    D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\PRJ\..\USER\ #
+#                     --vregs 16                                              #
+#    List file    =  D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\PRJ\Debug\Li #
+#                    st\NvramOp.lst                                           #
+#    Object file  =  D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\PRJ\Debug\Ob #
+#                    j\NvramOp.o                                              #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\USER\NvramOp.c
+      1          /*;*****************************************************************************
+      2          ; FILENAME		: NvramOp.c
+      3          ; AUTHOR		: Feng Liu
+      4          ; PURPOSE		: Operation for internal E2PROM (NVRAM) controller of stm8l051
+      5          ;                       : 256 bytes internal E2PROM 
+      6          ; REVISION		: 1.0
+      7          ; SYSTEM CLOCK	        : 16MHz
+      8          ; MCU type              : STM8L051F3            
+      9          ; Date Time             : 2016-04-18
+     10          ; Copy right :          : Eastfield Lighting Co., Ltd.
+     11          ;******************************************************************************/
+     12          
+     13          /* Includes ------------------------------------------------------------------*/
+     14          #include "NvramOp.h"
+     15          
+     16          /* Private typedef -----------------------------------------------------------*/
+     17          /* Private define ------------------------------------------------------------*/
+     18          
+     19          /* Private macro -------------------------------------------------------------*/
+     20          /* Private variables ---------------------------------------------------------*/
+     21          #ifdef _IAR_
+     22          __no_init __eeprom unsigned char NVRAM[0x100];
+     23          #endif
+     24          
+     25          /* Public functions Declaration ----------------------------------------------*/
+     26          /* Private macro -------------------------------------------------------------*/
+     27          /* Private variables ---------------------------------------------------------*/
+     28          /* Private function prototypes -----------------------------------------------*/
+     29          
+     30          /* Private functions ---------------------------------------------------------*/
+     31          
+     32          
+     33          /* Public functions ----------------------------------------------------------*/
+     34          uint8_t Nvram_Read (uint8_t u8Offset) 
+     35          {
+     36            return NVRAM[u8Offset];
+     37          }
+     38          
+     39          uint8_t Nvram_Write (uint8_t u8Offset, uint8_t u8Value)
+     40          {
+     41            FLASH_Unlock(FLASH_MemType_Data);
+     42            NVRAM[u8Offset] = u8Value;
+     43            FLASH_WaitForLastOperation(FLASH_MemType_Data);
+     44            FLASH_Lock(FLASH_MemType_Data);
+     45            
+     46            return 0;
+     47          }
+     48          
+     49          void NvramWrite_TrancBegin ()
+     50          {
+     51            FLASH_Unlock(FLASH_MemType_Data);
+     52          }
+     53          
+     54          void NvramWrite_TrancEnd ()
+     55          {
+     56            FLASH_WaitForLastOperation(FLASH_MemType_Data);
+     57            FLASH_Lock(FLASH_MemType_Data);
+     58          }
+     59            
+     60          void NvramWrite_Tranction (uint8_t u8Offset, uint8_t u8Value)
+     61          {
+     62            NVRAM[u8Offset] = u8Value;
+     63          }
+     64          
+     65          
+     66          
+     67          /******************* (C) COPYRIGHT 2016 Eastfield Lighting *****END OF FILE****/
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+     256  NVRAM
+       7  NvramWrite_TrancBegin
+      13  NvramWrite_TrancEnd
+      27  NvramWrite_Tranction
+       6  Nvram_Read
+      46  Nvram_Write
+
+ 
+ 256 bytes in section .eeprom.noinit
+  99 bytes in section .far_func.text
+ 
+  99 bytes of CODE memory
+ 256 bytes of DATA memory
+
+Errors: none
+Warnings: none

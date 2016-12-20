@@ -1,0 +1,100 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.41.1.50116 for STM8             06/Sep/2016  20:40:01 #
+# Copyright 2010-2013 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  D:\EF_proj\STM8\StripLight_1.0\RGB_Striplight_1.0\USER\s #
+#                    triplight.c                                              #
+#    Command line =  D:\EF_proj\STM8\StripLight_1.0\RGB_Striplight_1.0\USER\s #
+#                    triplight.c -e -Ol --no_cse --no_unroll --no_inline      #
+#                    --no_code_motion --no_tbaa --no_cross_call --debug       #
+#                    --code_model medium --data_model medium -o               #
+#                    D:\EF_proj\STM8\StripLight_1.0\RGB_Striplight_1.0\PRJ\De #
+#                    bug\Obj\ --dlib_config D:\EF_proj\STM8\IAR\STM8_1.4\stm8 #
+#                    \LIB\dlstm8mmn.h -D STM8L15X_MD -lcN                     #
+#                    D:\EF_proj\STM8\StripLight_1.0\RGB_Striplight_1.0\PRJ\De #
+#                    bug\List\ -I D:\EF_proj\STM8\StripLight_1.0\RGB_Striplig #
+#                    ht_1.0\PRJ\..\LIB\STM8L15x_StdPeriph_Driver\inc\ -I      #
+#                    D:\EF_proj\STM8\StripLight_1.0\RGB_Striplight_1.0\PRJ\.. #
+#                    \USER\ --vregs 16                                        #
+#    List file    =  D:\EF_proj\STM8\StripLight_1.0\RGB_Striplight_1.0\PRJ\De #
+#                    bug\List\striplight.lst                                  #
+#    Object file  =  D:\EF_proj\STM8\StripLight_1.0\RGB_Striplight_1.0\PRJ\De #
+#                    bug\Obj\striplight.o                                     #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\EF_proj\STM8\StripLight_1.0\RGB_Striplight_1.0\USER\striplight.c
+      1          #include "striplight.h"
+      2          
+      3          
+      4          
+      5          
+      6          void Light_CLK_Pin_init ()
+      7          {
+      8            /* Enable TIM1 clock */
+      9            CLK_PeripheralClockConfig(CLK_Peripheral_TIM1, ENABLE);
+     10            /* Enable TIM1 clock */
+     11            CLK_PeripheralClockConfig(CLK_Peripheral_TIM2, ENABLE);
+     12            /* Enable TIM1 clock */
+     13            CLK_PeripheralClockConfig(CLK_Peripheral_TIM3, ENABLE);
+     14            
+     15            
+     16            /* TIM1 Channels 3N, 1  ,3 and 1N configuration: PD2, PD4 and PD7 */
+     17            GPIO_Init(GPIOD, GPIO_Pin_0 | GPIO_Pin_2 | GPIO_Pin_4 | GPIO_Pin_5  , GPIO_Mode_Out_PP_Low_Fast);
+     18          
+     19            /* TIM1 Break input pin configuration */
+     20            GPIO_Init(GPIOB, GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3  , GPIO_Mode_Out_PP_Low_Fast);
+     21          
+     22          
+     23          }
+     24          
+     25          
+     26          void Motor_TIM_Config (void)
+     27          {
+     28            /* Time Base configuration */
+     29            TIM1_TimeBaseInit(TIM1_PRESCALER, TIM1_CounterMode_Up, TIM1_PERIOD, TIM1_REPTETION_COUNTER);
+     30          
+     31            /* Channels 1, 2 and 3 Configuration in TIMING mode */
+     32            TIM1_OC1Init(TIM1_OCMode_Timing, TIM1_OutputState_Enable, TIM1_OutputNState_Enable, CCR1_VAL,
+     33                         TIM1_OCPolarity_High, TIM1_OCNPolarity_High, TIM1_OCIdleState_Reset, TIM1_OCNIdleState_Reset);
+     34            TIM1_OC3Init(TIM1_OCMode_Timing, TIM1_OutputState_Enable, TIM1_OutputNState_Enable, CCR3_VAL,
+     35                         TIM1_OCPolarity_High, TIM1_OCNPolarity_High, TIM1_OCIdleState_Reset, TIM1_OCNIdleState_Reset);
+     36            
+     37            /* Automatic Output Enable, Break, dead time and lock configuration*/
+     38            TIM1_BDTRConfig(TIM1_OSSIState_Enable, TIM1_LockLevel_Off, DEADTIME,
+     39                            TIM1_BreakState_Enable, TIM1_BreakPolarity_Low, TIM1_AutomaticOutput_Disable);
+     40          
+     41            TIM1_CCPreloadControl(ENABLE);
+     42            TIM1_ITConfig(TIM1_IT_COM, ENABLE);
+     43            /* Main Output Enable */
+     44            TIM1_CtrlPWMOutputs(ENABLE);
+     45            /* TIM1 counter enable */
+     46            TIM1_Cmd(ENABLE);
+     47            
+     48          #if 1
+     49            
+     50            /* TIM4 Peripheral Configuration */
+     51            /* Time Base configuration */
+     52            //TIM4_TimeBaseInit(TIM4_Prescaler_128, TIM4_PERIOD);
+     53            TIM4_TimeBaseInit(TIM4_Prescaler_16, TIM4_PERIOD);
+     54            /* TIM4 update interrupt enable */
+     55            TIM4_ITConfig(TIM4_IT_Update, ENABLE);
+     56            /* TIM4 counter enable */
+     57            TIM4_Cmd(ENABLE);
+     58            
+     59          #endif
+     60          }
+     61          
+     62          void Motor_Init (void)
+     63          {
+     64            
+     65            Motor_CLK_Pin_init ();
+     66            
+     67            Motor_TIM_Config ();
+     68          
+     69          }
+
+Errors: 37
+Warnings: 14

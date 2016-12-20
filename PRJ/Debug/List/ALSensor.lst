@@ -1,0 +1,147 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.41.1.50116 for STM8             09/Oct/2016  10:21:31 #
+# Copyright 2010-2013 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  D:\EF_proj\STM8\StripLight_1.0\RGB_Striplight_1.1\USER\A #
+#                    LSensor.c                                                #
+#    Command line =  D:\EF_proj\STM8\StripLight_1.0\RGB_Striplight_1.1\USER\A #
+#                    LSensor.c -e -On --no_cse --no_unroll --no_inline        #
+#                    --no_code_motion --no_tbaa --no_cross_call --debug       #
+#                    --code_model medium --data_model medium -o               #
+#                    D:\EF_proj\STM8\StripLight_1.0\RGB_Striplight_1.1\PRJ\De #
+#                    bug\Obj\ --dlib_config D:\EF_proj\STM8\IAR\STM8_1.4\stm8 #
+#                    \LIB\dlstm8mmn.h -D STM8L15X_MD -lcN                     #
+#                    D:\EF_proj\STM8\StripLight_1.0\RGB_Striplight_1.1\PRJ\De #
+#                    bug\List\ -I D:\EF_proj\STM8\StripLight_1.0\RGB_Striplig #
+#                    ht_1.1\PRJ\..\LIB\STM8L15x_StdPeriph_Driver\inc\ -I      #
+#                    D:\EF_proj\STM8\StripLight_1.0\RGB_Striplight_1.1\PRJ\.. #
+#                    \USER\ --vregs 16                                        #
+#    List file    =  D:\EF_proj\STM8\StripLight_1.0\RGB_Striplight_1.1\PRJ\De #
+#                    bug\List\ALSensor.lst                                    #
+#    Object file  =  D:\EF_proj\STM8\StripLight_1.0\RGB_Striplight_1.1\PRJ\De #
+#                    bug\Obj\ALSensor.o                                       #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\EF_proj\STM8\StripLight_1.0\RGB_Striplight_1.1\USER\ALSensor.c
+      1          /*;*****************************************************************************
+      2          ; FILENAME		: ALSensor.c
+      3          ; AUTHOR		: Feng Liu
+      4          ; PURPOSE		: Operation for ADC1 with Opto-Resistor value in stm8l051
+      5          ;                       ; Ambient Light Sensor (Opto-resistor)
+      6          ; REVISION		: 1.0
+      7          ; SYSTEM CLOCK	        : 16MHz
+      8          ; MCU type              : STM8L051F3            
+      9          ; Date Time             : 2016-04-18
+     10          ; Copy right :          : Eastfield Lighting Co., Ltd.
+     11          ;******************************************************************************/
+     12          
+     13          /* Includes ------------------------------------------------------------------*/
+     14          #include "stm8l15x.h"
+     15          #include "typedef.h"
+     16          #include "global.h"
+     17          #include "main.h"
+     18          
+     19          /* Private typedef -----------------------------------------------------------*/
+     20          /* Private define ------------------------------------------------------------*/
+     21          #define ADC_ALS_MEASUREMENT_CHANNEL     ADC_Channel_17
+     22          
+     23          /* Channel 17 is a slow channel */
+     24          #define ADC_GROUP_SPEEDCHANNEL          ADC_Group_SlowChannels
+     25          
+     26          /* Private macro -------------------------------------------------------------*/
+     27          /* Private variables ---------------------------------------------------------*/
+     28          /* Public functions Declaration ----------------------------------------------*/
+     29          /* Private macro -------------------------------------------------------------*/
+     30          /* Private variables ---------------------------------------------------------*/
+     31          /* Private function prototypes -----------------------------------------------*/
+     32          
+     33          /* Private functions ---------------------------------------------------------*/
+     34          
+     35          
+     36          /* Public functions ----------------------------------------------------------*/
+     37          void initADC1Function (void)
+     38          {
+     39            CLK_PeripheralClockConfig(CLK_Peripheral_ADC1, ENABLE);
+     40          
+     41            /* Initialize and configure ADC1 */
+     42            ADC_Init(ADC1, ADC_ConversionMode_Continuous, ADC_Resolution_12Bit, ADC_Prescaler_2);
+     43          
+     44            /* ADC channel used for IDD measurement */
+     45            ADC_SamplingTimeConfig(ADC1, ADC_GROUP_SPEEDCHANNEL, ADC_SamplingTime_384Cycles);
+     46          
+     47            /* Enable ADC1 */
+     48            ADC_Cmd(ADC1, ENABLE);
+     49            
+     50            //////////////////////////////////////////////////////////////////////////////
+     51            /* Disable SchmittTrigger for ADC_Channel, to save power */
+     52            ADC_SchmittTriggerConfig(ADC1, ADC_ALS_MEASUREMENT_CHANNEL, DISABLE);
+     53          
+     54            /* Enable ADC1 Channel used for IDD measurement */
+     55            ADC_ChannelCmd(ADC1, ADC_ALS_MEASUREMENT_CHANNEL, ENABLE);
+     56          }
+     57          
+     58          void initAmbientLightSensorDetection (void)
+     59          {
+     60            initADC1Function ();
+     61          }
+     62          
+     63          void startLighSensorConversion (void)
+     64          {
+     65            /* Start ADC1 Conversion using Software trigger*/
+     66            ADC_SoftwareStartConv(ADC1);
+     67          }
+     68          
+     69          // byMode : 0 for Nonblock, > 1 for block
+     70          uint8_t getAmbientLightSensorValue (unsigned char byMode)
+     71          {
+     72            uint16_t ADCData;
+     73            /* Wait until End-Of-Convertion */
+     74            if (byMode)
+     75              while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == 0)
+     76              {}
+     77          
+     78            /* Get conversion value */
+     79            ADCData = ADC_GetConversionValue(ADC1);
+     80            
+     81            return (ADCData >> 4);  // 12 bit -> 8 bit
+     82          }
+     83          void Sensors_GPIO_Init(void)
+     84          {
+     85            //VOICE SENSOR
+     86            GPIO_Init(GPIOA, GPIO_Pin_4, GPIO_Mode_In_FL_No_IT);
+     87            
+     88            //INFRARED SENSOR
+     89            GPIO_Init(GPIOA, GPIO_Pin_0, GPIO_Mode_In_FL_No_IT);
+     90            
+     91           
+     92          }
+     93          
+     94          
+     95          
+     96          
+     97          
+     98          
+     99          
+    100          
+    101          /******************* (C) COPYRIGHT 2016 Eastfield Lighting *****END OF FILE****/
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      23  Sensors_GPIO_Init
+      49  getAmbientLightSensorValue
+      72  initADC1Function
+       5  initAmbientLightSensorDetection
+       8  startLighSensorConversion
+
+ 
+ 157 bytes in section .far_func.text
+ 
+ 157 bytes of CODE memory
+
+Errors: none
+Warnings: none

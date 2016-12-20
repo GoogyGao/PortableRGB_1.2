@@ -1,0 +1,458 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.41.1.50116 for STM8             21/Oct/2016  14:59:57 #
+# Copyright 2010-2013 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\USER\main.c  #
+#    Command line =  D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\USER\main.c  #
+#                    -e -On --no_cse --no_unroll --no_inline                  #
+#                    --no_code_motion --no_tbaa --no_cross_call --debug       #
+#                    --code_model medium --data_model medium -o               #
+#                    D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\PRJ\Debug\Ob #
+#                    j\ --dlib_config D:\EF_proj\STM8\IAR\STM8_1.4\stm8\LIB\d #
+#                    lstm8mmn.h -D STM8L15X_MD -lcN                           #
+#                    D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\PRJ\Debug\Li #
+#                    st\ -I D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\PRJ\. #
+#                    .\LIB\STM8L15x_StdPeriph_Driver\inc\ -I                  #
+#                    D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\PRJ\..\USER\ #
+#                     --vregs 16                                              #
+#    List file    =  D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\PRJ\Debug\Li #
+#                    st\main.lst                                              #
+#    Object file  =  D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\PRJ\Debug\Ob #
+#                    j\main.o                                                 #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\EF_proj\STM8\PortableRGB\PortableRGB_1.2\USER\main.c
+      1          #include "stm8l15x.h"
+      2          /**
+      3            ******************************************************************************
+      4            * @file    RTC/RTC_Calendar/main.c
+      5            * @author  
+      6            * @version V1.0
+      7            * @date    PortableLamp
+      8            * @brief   WS2812B  Driver & APPLICATION 
+      9            ******************************************************************************
+     10          
+     11            */ 
+     12          
+     13          /* Includes ------------------------------------------------------------------*/
+     14          #include "main.h"
+     15          #include "UartDev.h"
+     16          #include "firelamp.h"
+     17          #include "LightPwmDrv.h"
+     18          /** @addtogroup STM8L15x_StdPeriph_Examples
+     19            * @{
+     20            */
+     21          
+     22          /** @addtogroup RTC_Calendar
+     23            * @{
+     24            */
+     25          
+     26          /* Private typedef -----------------------------------------------------------*/
+     27          typedef struct _Light_Usart {
+     28            uint8_t StripLightId;
+     29            uint8_t CtrlType;
+     30            uint8_t ColorR1;
+     31            uint8_t ColorG1;
+     32            uint8_t ColorB1;
+     33            uint8_t Brightness1;
+     34            uint8_t Switch1;
+     35            uint8_t Lednum;
+     36            uint8_t CtrlTime;
+     37            uint8_t Scene;
+     38          
+     39          }_Light_Usart_;
+     40          
+     41          struct _ReturnRGBParam{
+     42            uint8_t r[1];
+     43            uint8_t g[1];
+     44            uint8_t b[1];
+     45            uint8_t w[1];
+     46            uint8_t scene[1];
+     47            uint8_t rgb_onoff[1];
+     48          };
+     49          
+     50          //struct _Light_Usart Light_Usart;
+     51          
+     52          typedef struct _BLE_Usart {
+     53            
+     54            _Light_Usart_ LightDiscribe;
+     55          
+     56          }_BLE_Usart_;
+     57            
+     58          typedef enum{
+     59            USART_SWITCH = 0x01,
+     60            USART_BRIGHTNESS,
+     61            USART_RGB,
+     62            USART_RGBW,
+     63            USART_SCENE,
+     64          }USART_CMD;
+     65          
+     66          //struct _Light_Usart Light_Usart;
+     67          
+     68          
+     69          /* Private define ------------------------------------------------------------*/
+     70          
+     71          /* Private macro -------------------------------------------------------------*/
+     72          /* Private variables ---------------------------------------------------------*/
+     73          uint8_t Buff_Cnt = 0;
+     74          extern uint8_t TouchFlag;
+     75          struct _BLE_Usart MyBLE_Usart;
+     76          struct _ReturnRGBParam ReturnRGBParam;
+     77          
+     78          uint8_t SWITCH_STATUS = 2;//1 open / 0 close
+     79          extern uint8_t FLASHFLAG;
+     80          uint8_t RETURN_FLAG  = 0;
+     81          uint8_t USART1_FLAG = 0;
+     82          uint8_t USART1_ReceiveDataBuf[20];
+     83          uint8_t BLEFLAG = 0;
+     84          uint8_t SWITCH_SAVE_FLAG = 0;
+     85          uint8_t SWITCHOFF = 0;
+     86          uint8_t ErrorTip [] = "INPUT ERROR!\n";
+     87          
+     88          /* Public functions ---------------------------------------------------------*/
+     89          uint8_t RGBColor[] = { 0xff, 0xff,0xff, 0xff,0xff,0xff, 0xff,0xff,0xff, 0xff,0xff,0xff, 0xff,0xff,0xff,
+     90                                 0xff, 0xff,0xff, 0xff,0xff,0xff, 0xff,0xff,0xff, 0xff,0xff,0xff, 0xff,0xff,0xff,
+     91                                 0xff, 0xff,0xff, 0xff,0xff,0xff, 0xff,0xff,0xff, 0xff,0xff,0xff, 0xff,0xff,0xff,
+     92                                 0xff, 0xff,0xff, 0xff,0xff,0xff, 0xff,0xff,0xff, 0xff,0xff,0xff, 0xff,0xff,0xff,
+     93          };
+     94          /* Private function prototypes -----------------------------------------------*/
+     95          void Delay(__IO uint32_t nCount);
+     96          
+     97          
+     98          
+     99          
+    100          /* Private functions ---------------------------------------------------------*/
+    101          /**
+    102            * @brief  Configure PVD
+    103            * @param  None
+    104            * @retval None
+    105            */
+    106          static void PVD_Config(void)
+    107          {
+    108            /* select PVD threshold*/
+    109            PWR_PVDLevelConfig(PWR_PVDLevel_2V85);
+    110          
+    111            /*Enable PVD  : optional (PVD is by default enabled)*/
+    112            PWR_PVDCmd(ENABLE);
+    113          
+    114            /*Enable PVD Interrupt*/
+    115            PWR_PVDITConfig(ENABLE);
+    116          }
+    117          
+    118          
+    119          void RGBCtrl(uint8_t RValue, uint8_t GValue, uint8_t BValue,uint8_t LedNum,uint8_t time)
+    120          {
+    121            uint8_t count ;
+    122            LedNum*=3;
+    123            for(count = 0 ; count < LedNum ; count+=3)
+    124            {
+    125              RGBColor[count] = GValue;
+    126              RGBColor[count+1] = RValue;
+    127              RGBColor[count+2] = BValue;
+    128            }
+    129            
+    130            SEND_CODE_DATA(RGBColor ,LedNum, FIRE_LAMP_PIN,time);
+    131          
+    132          }
+    133          
+    134          
+    135          
+    136          
+    137          #define TEST_EEPROM_OPERATION 0
+    138          #if TEST_EEPROM_OPERATION
+    139          void test_eeprom (void)
+    140          {
+    141              FLASH_Unlock(FLASH_MemType_Data);
+    142              NVRAM[0] = 0x06 + 2;
+    143              NVRAM[1] = 0x05 + 2;
+    144              NVRAM[2] = 0x04 + 2;
+    145              NVRAM[3] = 0x03 + 2;
+    146              NVRAM[4] = 0x02 + 2;
+    147              NVRAM[5] = 0x01 + 2;
+    148              FLASH_WaitForLastOperation(FLASH_MemType_Data);
+    149              FLASH_Lock(FLASH_MemType_Data);
+    150          }
+    151          #endif
+    152          void InitLightParams()
+    153          {
+    154            MyBLE_Usart.LightDiscribe.Lednum = 49;
+    155            MyBLE_Usart.LightDiscribe.CtrlTime = 0;
+    156          /*
+    157            if(Nvram_Read(enmE2promMark)==10)
+    158            {
+    159              MyBLE_Usart.LightDiscribe.ColorR1 = Nvram_Read(enmColorR1);
+    160              MyBLE_Usart.LightDiscribe.ColorG1 = Nvram_Read(enmColorG1);
+    161              MyBLE_Usart.LightDiscribe.ColorB1 = Nvram_Read(enmColorB1);
+    162              MyBLE_Usart.LightDiscribe.Brightness1 = Nvram_Read(enmBrightness1);
+    163              MyBLE_Usart.LightDiscribe.Switch1 = Nvram_Read(enmPowerOnOffState1);
+    164              MyBLE_Usart.LightDiscribe.Scene = Nvram_Read(enmScene);
+    165              
+    166           
+    167            }else 
+    168           // {
+    169          */
+    170              MyBLE_Usart.LightDiscribe.ColorR1 = 255;
+    171              MyBLE_Usart.LightDiscribe.ColorG1 = 255;
+    172              MyBLE_Usart.LightDiscribe.ColorB1 = 255;
+    173              MyBLE_Usart.LightDiscribe.Brightness1 = 100;
+    174              MyBLE_Usart.LightDiscribe.Switch1 = 1 ;
+    175              MyBLE_Usart.LightDiscribe.Scene = 0;
+    176             
+    177           // }
+    178           // if(MyBLE_Usart.LightDiscribe.Brightness1 == 0)
+    179           //   MyBLE_Usart.LightDiscribe.Brightness1 = 100;
+    180            if(MyBLE_Usart.LightDiscribe.Scene == 0)
+    181              RGBLightCtr(MyBLE_Usart.LightDiscribe.ColorR1, MyBLE_Usart.LightDiscribe.ColorG1, MyBLE_Usart.LightDiscribe.ColorB1 ,
+    182                                  MyBLE_Usart.LightDiscribe.Brightness1 ,MyBLE_Usart.LightDiscribe.CtrlTime ,MyBLE_Usart.LightDiscribe.Lednum );
+    183          }
+    184          
+    185          
+    186          /**
+    187            * @brief  Main program.
+    188            * @param  None
+    189            * @retval None
+    190            */
+    191          //TIM2_GetCounter()    该函数用来获取定时器计数的值
+    192          void main(void)
+    193          {
+    194              uint8_t i, UsartSendState;
+    195              CLK_DeInit();
+    196              //After reset, the device restarts by default with the HSI clock divided by 8.
+    197              /* High speed internal clock prescaler: 1 */
+    198              CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_1);  // now: HSI=16M prescale = 1; sysclk = 16M
+    199              //CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_2);  // now: HSI=16M prescale = 16; sysclk = 1M
+    200              Usart1_Config();
+    201              
+    202              LampGpioInit();
+    203              
+    204              
+    205              enableInterrupts(); //open all IT
+    206              Delay(8000);//wait for led power supply normally
+    207              InitLightParams();
+    208              
+    209              
+    210              
+    211              while (1)
+    212              {
+    213                //RGBLightCtr(255,0,0,10,0,49);
+    214                //APP_WARMWHITE();
+    215                //APP_BigFIRE();
+    216                //APP_SmallFIRE();
+    217          #if 1
+    218                if((USART1_FLAG == 1)&&(USART1_ReceiveDataBuf[0] !=0x00))
+    219                {
+    220                  for(i = 0 ; i < 9 ;i++)
+    221                  {
+    222                    USART1_ReceiveDataBuf[i] = USART1_ReceiveDataBuf[i+1];
+    223                  }
+    224                }
+    225                if((USART1_FLAG == 1)&&(USART1_ReceiveDataBuf[0]  ==0x00))
+    226                {
+    227                  
+    228                  /*TIM4 counter enable */
+    229                  //TIM4_Cmd(ENABLE);
+    230                  //USART1_ReceiveDataBuf[4] represent device type
+    231                  //0001	便携式RGB
+    232                  //0010	三色纸灯
+    233                  //0011	运动射灯
+    234                  //0100	智能灯头
+    235                  MyBLE_Usart.LightDiscribe.StripLightId = USART1_ReceiveDataBuf[1];
+    236                  MyBLE_Usart.LightDiscribe.CtrlType = USART1_ReceiveDataBuf[2];
+    237                  MyBLE_Usart.LightDiscribe.Scene = 0;
+    238                  if((MyBLE_Usart.LightDiscribe.StripLightId == 0x20)||(MyBLE_Usart.LightDiscribe.StripLightId == 0x2f))//ctrl light1 RGB
+    239                  {
+    240                    if((MyBLE_Usart.LightDiscribe.CtrlType != 1))
+    241                      MyBLE_Usart.LightDiscribe.Switch1 = 1;
+    242                    switch(MyBLE_Usart.LightDiscribe.CtrlType)
+    243                    {
+    244                      case USART_SWITCH:
+    245                    MyBLE_Usart.LightDiscribe.Switch1 = USART1_ReceiveDataBuf[4];
+    246                    SWITCH_STATUS = USART1_ReceiveDataBuf[4];
+    247                    if(MyBLE_Usart.LightDiscribe.Switch1)
+    248                      RGBLightCtr(MyBLE_Usart.LightDiscribe.ColorR1, MyBLE_Usart.LightDiscribe.ColorG1, MyBLE_Usart.LightDiscribe.ColorB1 ,
+    249                                  MyBLE_Usart.LightDiscribe.Brightness1 ,MyBLE_Usart.LightDiscribe.CtrlTime ,MyBLE_Usart.LightDiscribe.Lednum );
+    250                    else
+    251                      RGBLightCtr(0, 0, 0 ,
+    252                                  MyBLE_Usart.LightDiscribe.Brightness1 ,MyBLE_Usart.LightDiscribe.CtrlTime ,MyBLE_Usart.LightDiscribe.Lednum );
+    253                    Usart1_SendByte(0);
+    254                    break;
+    255                  
+    256                  case USART_BRIGHTNESS:
+    257                    MyBLE_Usart.LightDiscribe.Brightness1 = USART1_ReceiveDataBuf[4];
+    258                    RGBLightCtr(MyBLE_Usart.LightDiscribe.ColorR1, MyBLE_Usart.LightDiscribe.ColorG1, MyBLE_Usart.LightDiscribe.ColorB1 ,
+    259                                  MyBLE_Usart.LightDiscribe.Brightness1 ,MyBLE_Usart.LightDiscribe.CtrlTime ,MyBLE_Usart.LightDiscribe.Lednum );
+    260                    Usart1_SendByte(0);
+    261                    break;
+    262                  case USART_RGB:
+    263                    MyBLE_Usart.LightDiscribe.ColorR1 = USART1_ReceiveDataBuf[4];
+    264                    MyBLE_Usart.LightDiscribe.ColorG1 = USART1_ReceiveDataBuf[5];
+    265                    MyBLE_Usart.LightDiscribe.ColorB1 = USART1_ReceiveDataBuf[6];
+    266                    RGBLightCtr(MyBLE_Usart.LightDiscribe.ColorR1, MyBLE_Usart.LightDiscribe.ColorG1, MyBLE_Usart.LightDiscribe.ColorB1 ,
+    267                                  MyBLE_Usart.LightDiscribe.Brightness1 ,MyBLE_Usart.LightDiscribe.CtrlTime ,MyBLE_Usart.LightDiscribe.Lednum );
+    268                    
+    269                    Usart1_SendByte(0);
+    270                    break;
+    271                    
+    272                  case USART_SCENE:
+    273                    MyBLE_Usart.LightDiscribe.Scene = USART1_ReceiveDataBuf[4];
+    274          
+    275                    Usart1_SendByte(0);
+    276                    break;
+    277          
+    278                  }
+    279                  }
+    280                  else
+    281                  {
+    282                    //operate faild
+    283                    Usart1_SendByte(1);
+    284                  }
+    285          #if 0
+    286                    //eeprom SAVE PARAM 
+    287                    NvramWrite_TrancBegin ();
+    288                    
+    289                    NvramWrite_Tranction(enmColorR1,MyBLE_Usart.LightDiscribe.ColorR1);
+    290                    NvramWrite_Tranction(enmColorG1,MyBLE_Usart.LightDiscribe.ColorG1);
+    291                    NvramWrite_Tranction(enmColorB1,MyBLE_Usart.LightDiscribe.ColorB1);
+    292                    NvramWrite_Tranction(enmBrightness1,MyBLE_Usart.LightDiscribe.Brightness1);
+    293                    NvramWrite_Tranction(enmPowerOnOffState1,MyBLE_Usart.LightDiscribe.Switch1);
+    294                    NvramWrite_Tranction(enmScene,MyBLE_Usart.LightDiscribe.Scene);
+    295          
+    296                    NvramWrite_Tranction(enmE2promMark,10);//set FLAG to save Light params
+    297                    NvramWrite_TrancEnd ();
+    298          #endif
+    299                    USART1_FLAG = 0;
+    300                    Buff_Cnt = 0;
+    301                    BLEFLAG = 1;
+    302                   
+    303                }
+    304                //send save param to BT module
+    305                if((RETURN_FLAG == 1)&&(USART1_ReceiveDataBuf[0] == 0xff))
+    306                {
+    307                  ReturnRGBParam.r[0] =  MyBLE_Usart.LightDiscribe.ColorR1;
+    308                  ReturnRGBParam.g[0] =  MyBLE_Usart.LightDiscribe.ColorG1;
+    309                  ReturnRGBParam.b[0] =  MyBLE_Usart.LightDiscribe.ColorB1;
+    310                  ReturnRGBParam.w[0] =  MyBLE_Usart.LightDiscribe.Brightness1;
+    311                  ReturnRGBParam.rgb_onoff[0]  = MyBLE_Usart.LightDiscribe.Switch1;
+    312                  ReturnRGBParam.scene[0] =  MyBLE_Usart.LightDiscribe.Scene;
+    313                  
+    314             
+    315                  //on/off stAte processing
+    316                  uint8_t OnOffState = 0;
+    317                  if((SWITCH_STATUS == 0)&&(USART1_ReceiveDataBuf[0] == 0xff))
+    318                  {
+    319                    OnOffState = (MyBLE_Usart.LightDiscribe.StripLightId & 0x0f);
+    320                    switch(OnOffState)
+    321                    {
+    322                    case 0:
+    323                      ReturnRGBParam.rgb_onoff[0]  = 0;
+    324                      break;
+    325                    case 1:
+    326                      ReturnRGBParam.rgb_onoff[1]  = 0;
+    327                      break;
+    328                    case 0x0f:
+    329                      ReturnRGBParam.rgb_onoff[0]  = 0;
+    330                      ReturnRGBParam.rgb_onoff[1]  = 0;
+    331                      break;
+    332                    }
+    333                  
+    334                  }
+    335                  
+    336                  UsartSendState = Usart1_SendDatArray((uint8_t *)&ReturnRGBParam ,6);
+    337                  
+    338                  Usart1_SendByte(UsartSendState);//success return 1,fail return 2
+    339                  RETURN_FLAG  = 0;
+    340                  Buff_Cnt = 0;
+    341                }
+    342                if(BLEFLAG == 0)
+    343                {
+    344                  
+    345                  if(TouchFlag ==1)
+    346                    MyBLE_Usart.LightDiscribe.Scene = 1;
+    347                  else if(TouchFlag ==2)
+    348                    MyBLE_Usart.LightDiscribe.Scene = 2;
+    349                  else if(TouchFlag ==3)
+    350                    MyBLE_Usart.LightDiscribe.Scene = 3;
+    351                  else if(TouchFlag ==4)
+    352                    MyBLE_Usart.LightDiscribe.Scene = 4;
+    353                  else if(TouchFlag ==5)
+    354                    MyBLE_Usart.LightDiscribe.Scene = 5;
+    355                  else if(TouchFlag ==6)
+    356                    MyBLE_Usart.LightDiscribe.Scene = 6;
+    357                  else if(TouchFlag ==7)
+    358                    MyBLE_Usart.LightDiscribe.Scene = 7;
+    359                }
+    360                
+    361                if(MyBLE_Usart.LightDiscribe.Scene == 1)
+    362                  APP_ICE();
+    363                else if(MyBLE_Usart.LightDiscribe.Scene == 2)
+    364                  APP_COLDFIRE();
+    365                else if(MyBLE_Usart.LightDiscribe.Scene == 3)
+    366                  APP_BigFIRE();
+    367                else if(MyBLE_Usart.LightDiscribe.Scene == 4)
+    368                  APP_SmallFIRE();
+    369                else if(MyBLE_Usart.LightDiscribe.Scene == 5)
+    370                  APP_WARMWHITE();
+    371                else if(MyBLE_Usart.LightDiscribe.Scene == 6)
+    372                  APP_COLDWHITE();
+    373                else if(MyBLE_Usart.LightDiscribe.Scene == 7)
+    374                  APP_SWITCHOFF();
+    375                
+    376                
+    377          #endif
+    378                
+    379              }
+    380          }
+    381          
+    382          
+    383          /**
+    384            * @brief  Inserts a delay time.
+    385            * @param  nCount: specifies the delay time length.
+    386            * @retval None
+    387            */
+    388          void Delay(__IO uint32_t nCount)   
+    389          {
+    390            nCount *=1;
+    391            for (; nCount != 0; nCount--)
+    392            {
+    393              //if((BLEFLAG==0)||(RETURN_FLAG==1)||(USART1_FLAG==1))
+    394               // nCount = 0;
+    395            }
+    396          }
+    397          
+    398          
+    399          
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       1  BLEFLAG
+       1  Buff_Cnt
+      56  Delay
+      14  ErrorTip
+      72  InitLightParams
+      10  MyBLE_Usart
+       1  RETURN_FLAG
+      60  RGBColor
+     113  RGBCtrl
+       6  ReturnRGBParam
+       1  SWITCHOFF
+       1  SWITCH_SAVE_FLAG
+       1  SWITCH_STATUS
+       1  USART1_FLAG
+      20  USART1_ReceiveDataBuf
+     724  main
+
+ 
+ 965 bytes in section .far_func.text
+  42 bytes in section .near.bss
+  75 bytes in section .near.data
+ 
+ 965 bytes of CODE memory
+ 117 bytes of DATA memory
+
+Errors: none
+Warnings: 1

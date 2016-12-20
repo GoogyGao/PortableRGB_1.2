@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Workspace>
+  <ConfigDictionary>
+    
+  <CurrentConfigs><Project>CanDtitRemoter/Debug</Project></CurrentConfigs></ConfigDictionary>
+  <Desktop>
+    <Static>
+      <Workspace>
+        <ColumnWidths>
+          
+          
+          
+          
+        <Column0>267</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+      </Workspace>
+      <Build>
+        
+        
+        
+        
+      <ColumnWidth0>26</ColumnWidth0><ColumnWidth1>707</ColumnWidth1><ColumnWidth2>188</ColumnWidth2><ColumnWidth3>47</ColumnWidth3></Build>
+      <Find-All-Declarations>
+        
+        
+        
+      <ColumnWidth0>470</ColumnWidth0><ColumnWidth1>67</ColumnWidth1><ColumnWidth2>806</ColumnWidth2></Find-All-Declarations>
+      <Select-Ambiguous-Definitions>
+        <ColumnWidth0>470</ColumnWidth0>
+        <ColumnWidth1>67</ColumnWidth1>
+        <ColumnWidth2>806</ColumnWidth2>
+      </Select-Ambiguous-Definitions>
+      <TerminalIO/>
+    <Debug-Log><ColumnWidth0>27</ColumnWidth0><ColumnWidth1>1300</ColumnWidth1></Debug-Log><Find-in-Files><ColumnWidth0>470</ColumnWidth0><ColumnWidth1>67</ColumnWidth1><ColumnWidth2>806</ColumnWidth2></Find-in-Files></Static>
+    <Windows>
+      
+      
+    <Wnd0>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-18613-19430</Identity>
+            <TabName>Workspace</TabName>
+            <Factory>Workspace</Factory>
+            <Session>
+              
+            <NodeDict><ExpandedNode>CanDtitRemoter</ExpandedNode><ExpandedNode>CanDtitRemoter/USER</ExpandedNode></NodeDict></Session>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd0><Wnd1>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-28838-19443</Identity>
+            <TabName>Build</TabName>
+            <Factory>Build</Factory>
+            <Session/>
+          </Tab>
+          <Tab>
+            <Identity>TabID-31809-25118</Identity>
+            <TabName>Find All Declarations</TabName>
+            <Factory>Find-All-Declarations</Factory>
+            <Session/>
+          </Tab>
+          <Tab>
+            <Identity>TabID-27400-13106</Identity>
+            <TabName>Ambiguous Definitions</TabName>
+            <Factory>Select-Ambiguous-Definitions</Factory>
+            <Session/>
+          </Tab>
+        <Tab><Identity>TabID-11769-18336</Identity><TabName>Debug Log</TabName><Factory>Debug-Log</Factory><Session/></Tab><Tab><Identity>TabID-9771-28319</Identity><TabName>Find in Files</TabName><Factory>Find-in-Files</Factory><Session/></Tab></Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd1></Windows>
+    <Editor>
+      
+      
+      
+      
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\USER\main.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>129</YPos2><SelStart2>3820</SelStart2><SelEnd2>3820</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\USER\UartDev.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>70</YPos2><SelStart2>2914</SelStart2><SelEnd2>2914</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\LIB\STM8L15x_StdPeriph_Driver\inc\stm8l15x_usart.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>29</YPos2><SelStart2>1557</SelStart2><SelEnd2>1557</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\USER\LightPwmDrv.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>200</YPos2><SelStart2>6216</SelStart2><SelEnd2>6216</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\USER\stm8l15x_it.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>478</YPos2><SelStart2>11424</SelStart2><SelEnd2>11424</SelEnd2></Tab><ActiveTab>4</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\USER\ALSensor.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>74</YPos2><SelStart2>0</SelStart2><SelEnd2>0</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\USER\eeprom.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>15</YPos2><SelStart2>1135</SelStart2><SelEnd2>1135</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\USER\NvramOp.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>0</YPos2><SelStart2>0</SelStart2><SelEnd2>0</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\USER\main.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>6</YPos2><SelStart2>735</SelStart2><SelEnd2>735</SelEnd2></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Positions>
+      
+      
+      
+      
+      
+    <Top><Row0><Sizes><Toolbar-050b66e8><key>iaridepm.enu1</key></Toolbar-050b66e8></Sizes></Row0><Row1><Sizes/></Row1><Row2><Sizes/></Row2></Top><Left><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>409</Bottom><Right>341</Right><x>-2</x><y>-2</y><xscreen>148</xscreen><yscreen>187</yscreen><sizeHorzCX>146825</sizeHorzCX><sizeHorzCY>292645</sizeHorzCY><sizeVertCX>340278</sizeVertCX><sizeVertCY>643192</sizeVertCY></Rect></Wnd0></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>185</Bottom><Right>1010</Right><x>-2</x><y>-2</y><xscreen>1012</xscreen><yscreen>187</yscreen><sizeHorzCX>1003968</sizeHorzCX><sizeHorzCY>292645</sizeHorzCY><sizeVertCX>146825</sizeVertCX><sizeVertCY>292645</sizeVertCY></Rect></Wnd1></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+  </Desktop>
+</Workspace>
+
+

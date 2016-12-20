@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Workspace>
+  <ConfigDictionary>
+    
+  <CurrentConfigs><Project>MaxusLampCtrl/Debug</Project></CurrentConfigs></ConfigDictionary>
+  <Desktop>
+    <Static>
+      <Workspace>
+        <ColumnWidths>
+          
+          
+          
+          
+        <Column0>297</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+      </Workspace>
+      <Build>
+        
+        
+        
+        
+      <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>687</ColumnWidth1><ColumnWidth2>183</ColumnWidth2><ColumnWidth3>45</ColumnWidth3></Build>
+      <Select-Ambiguous-Definitions>
+        
+        
+        
+      <ColumnWidth0>405</ColumnWidth0><ColumnWidth1>57</ColumnWidth1><ColumnWidth2>695</ColumnWidth2></Select-Ambiguous-Definitions>
+      <Find-in-Files>
+        
+        
+        
+      <ColumnWidth0>405</ColumnWidth0><ColumnWidth1>57</ColumnWidth1><ColumnWidth2>695</ColumnWidth2></Find-in-Files>
+    <TerminalIO/><Debug-Log><ColumnWidth0>19</ColumnWidth0><ColumnWidth1>1862</ColumnWidth1></Debug-Log><PROJECT_GUI_CALL_GRAPH><col-names><item>File</item><item>Function</item><item>Line</item></col-names><col-widths><item>200</item><item>700</item><item>100</item></col-widths></PROJECT_GUI_CALL_GRAPH><Find-All-References><ColumnWidth0>226</ColumnWidth0><ColumnWidth1>32</ColumnWidth1><ColumnWidth2>388</ColumnWidth2></Find-All-References></Static>
+    <Windows>
+      
+      
+    <Wnd3>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-24768-5223</Identity>
+            <TabName>Workspace</TabName>
+            <Factory>Workspace</Factory>
+            <Session>
+              
+            <NodeDict><ExpandedNode>MaxusLampCtrl</ExpandedNode><ExpandedNode>MaxusLampCtrl/USER</ExpandedNode></NodeDict></Session>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd3><Wnd4>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-7642-6363</Identity>
+            <TabName>Build</TabName>
+            <Factory>Build</Factory>
+            <Session/>
+          </Tab>
+          <Tab>
+            <Identity>TabID-31960-32053</Identity>
+            <TabName>Ambiguous Definitions</TabName>
+            <Factory>Select-Ambiguous-Definitions</Factory>
+            <Session/>
+          </Tab>
+          <Tab>
+            <Identity>TabID-447-2332</Identity>
+            <TabName>Find in Files</TabName>
+            <Factory>Find-in-Files</Factory>
+            <Session/>
+          </Tab>
+        <Tab><Identity>TabID-15651-24448</Identity><TabName>Debug Log</TabName><Factory>Debug-Log</Factory><Session/></Tab><Tab><Identity>TabID-14376-13966</Identity><TabName>Find All References</TabName><Factory>Find-All-References</Factory><Session/></Tab></Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd4><Wnd5><Tabs><Tab><Identity>TabID-21762-28264</Identity><TabName>Call Graph</TabName><Factory>PROJECT_GUI_CALL_GRAPH</Factory></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd5></Windows>
+    <Editor>
+      
+      
+      
+      
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\USER\IrDecode.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>0</YPos2><SelStart2>129</SelStart2><SelEnd2>129</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\LIB\STM8L15x_StdPeriph_Driver\src\stm8l15x_adc.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>464</YPos2><SelStart2>17630</SelStart2><SelEnd2>17630</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\USER\stm8l15x_conf.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>36</YPos2><SelStart2>1985</SelStart2><SelEnd2>1985</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\USER\LampAction.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>0</YPos2><SelStart2>1590</SelStart2><SelEnd2>1590</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\USER\UartDev.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>27</YPos2><SelStart2>1671</SelStart2><SelEnd2>1671</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\USER\LifxLcmInterface.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>0</YPos2><SelStart2>788</SelStart2><SelEnd2>804</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\USER\ALSensor.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>46</YPos2><SelStart2>2759</SelStart2><SelEnd2>2759</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\USER\global.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>0</YPos2><SelStart2>616</SelStart2><SelEnd2>616</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\LIB\STM8L15x_StdPeriph_Driver\inc\stm8l15x_rtc.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>296</YPos2><SelStart2>19276</SelStart2><SelEnd2>19276</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\USER\main.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>190</YPos2><SelStart2>6403</SelStart2><SelEnd2>6438</SelEnd2></Tab><ActiveTab>9</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\USER\main.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>0</YPos2><SelStart2>1454</SelStart2><SelEnd2>1454</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\USER\LifxLcmInterface.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>153</YPos2><SelStart2>6193</SelStart2><SelEnd2>6193</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\USER\LightAction.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>739</YPos2><SelStart2>21265</SelStart2><SelEnd2>21265</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\USER\IrDecode.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>161</YPos2><SelStart2>6349</SelStart2><SelEnd2>6349</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\LIB\STM8L15x_StdPeriph_Driver\src\stm8l15x_exti.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>311</YPos2><SelStart2>12546</SelStart2><SelEnd2>12546</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\LIB\STM8L15x_StdPeriph_Driver\src\stm8l15x_usart.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>600</YPos2><SelStart2>21872</SelStart2><SelEnd2>21887</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\USER\stm8l15x_it.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>0</YPos2><SelStart2>2235</SelStart2><SelEnd2>2235</SelEnd2></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Positions>
+      
+      
+      
+      
+      
+    <Top><Row0><Sizes><Toolbar-011cb8d8><key>iaridepm.enu1</key></Toolbar-011cb8d8></Sizes></Row0></Top><Left><Row0><Sizes><Wnd3><Rect><Top>-2</Top><Left>-2</Left><Bottom>509</Bottom><Right>371</Right><x>-2</x><y>-2</y><xscreen>132</xscreen><yscreen>120</yscreen><sizeHorzCX>79566</sizeHorzCX><sizeHorzCY>133482</sizeHorzCY><sizeVertCX>224834</sizeVertCX><sizeVertCY>568409</sizeVertCY></Rect></Wnd3></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd5><Rect><Top>-2</Top><Left>-2</Left><Bottom>345</Bottom><Right>690</Right><x>-2</x><y>-2</y><xscreen>692</xscreen><yscreen>347</yscreen><sizeHorzCX>417119</sizeHorzCX><sizeHorzCY>385984</sizeHorzCY><sizeVertCX>65702</sizeVertCX><sizeVertCY>186874</sizeVertCY></Rect></Wnd5><Wnd4><Rect><Top>0</Top><Left>0</Left><Bottom>0</Bottom><Right>0</Right><x>688</x><y>-2</y><xscreen>973</xscreen><yscreen>347</yscreen><sizeHorzCX>586498</sizeHorzCX><sizeHorzCY>385984</sizeHorzCY><sizeVertCX>79566</sizeVertCX><sizeVertCY>133482</sizeVertCY></Rect></Wnd4></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+  </Desktop>
+</Workspace>
+
+

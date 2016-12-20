@@ -1,0 +1,378 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.41.1.50116 for STM8             06/Sep/2016  19:54:22 #
+# Copyright 2010-2013 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  D:\EF_proj\STM8\StripLight_1.0\RGB_Striplight_1.0\USER\M #
+#                    otor_Drv.c                                               #
+#    Command line =  D:\EF_proj\STM8\StripLight_1.0\RGB_Striplight_1.0\USER\M #
+#                    otor_Drv.c -e -Ol --no_cse --no_unroll --no_inline       #
+#                    --no_code_motion --no_tbaa --no_cross_call --debug       #
+#                    --code_model medium --data_model medium -o               #
+#                    D:\EF_proj\STM8\StripLight_1.0\RGB_Striplight_1.0\PRJ\De #
+#                    bug\Obj\ --dlib_config D:\EF_proj\STM8\IAR\STM8_1.4\stm8 #
+#                    \LIB\dlstm8mmn.h -D STM8L15X_MD -lcN                     #
+#                    D:\EF_proj\STM8\StripLight_1.0\RGB_Striplight_1.0\PRJ\De #
+#                    bug\List\ -I D:\EF_proj\STM8\StripLight_1.0\RGB_Striplig #
+#                    ht_1.0\PRJ\..\LIB\STM8L15x_StdPeriph_Driver\inc\ -I      #
+#                    D:\EF_proj\STM8\StripLight_1.0\RGB_Striplight_1.0\PRJ\.. #
+#                    \USER\ --vregs 16                                        #
+#    List file    =  D:\EF_proj\STM8\StripLight_1.0\RGB_Striplight_1.0\PRJ\De #
+#                    bug\List\Motor_Drv.lst                                   #
+#    Object file  =  D:\EF_proj\STM8\StripLight_1.0\RGB_Striplight_1.0\PRJ\De #
+#                    bug\Obj\Motor_Drv.o                                      #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\EF_proj\STM8\StripLight_1.0\RGB_Striplight_1.0\USER\Motor_Drv.c
+      1          #include "stm8l15x_conf.h"
+      2          #include "Motor_Drv.h"
+      3          #include "main.h"
+      4          #define TIM1_PERIOD                  4095
+      5          #define TIM1_PRESCALER                  0
+      6          #define TIM1_REPTETION_COUNTER          0
+      7          
+      8          #define CCR1_VAL                     2047
+      9          #define CCR3_VAL                     2047
+     10          
+     11          #define DEADTIME                        1
+     12          #define TIM4_PERIOD                   255
+     13          
+     14          extern uint8_t step ;
+     15          
+     16          /*-----------------------------------------------
+     17                       | Step1 | Step2 | Step3 | Step4 | Step5 | Step6 | Step7 | Step8 |
+     18             ----------------------------------------------------------  ------- -------  
+     19            |Channel1  |  PWM  |  PWM  |   0   |   0   |   0   |   0   |   0   |  PWM  |
+     20             ----------------------------------------------------------  ------- -------  
+     21            |Channel1N |   0   |  PWM  |  PWM  |  PWM  |   0   |   0   |   0   |   0   |
+     22             ----------------------------------------------------------  ------- -------  
+     23            |Channel2  |   0   |   0   |   0   |  PWM  |  PWM  |  PWM  |   0   |   0   |
+     24             ----------------------------------------------------------  ------- -------  
+     25            |Channel2N |   0   |   0   |   0   |   0   |   0   |  PWM  |  PWM  |  PWM  |
+     26             ----------------------------------------------------------  ------- -------  
+     27            
+     28          1 step = 5.625бу
+     29          ------------------------------------------------------------------------------*/
+     30          
+     31          void Motor_CLK_Pin_init ()
+     32          {
+     33            /* Enable TIM1 clock */
+     34            CLK_PeripheralClockConfig(CLK_Peripheral_TIM1, ENABLE);
+     35            /* Enable TIM4 clock */
+     36            CLK_PeripheralClockConfig(CLK_Peripheral_TIM4, ENABLE);
+     37            
+     38            /* TIM1 Channels 3N, 1  ,3 and 1N configuration: PD2, PD4 and PD7 */
+     39            GPIO_Init(GPIOD, GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_5 | GPIO_Pin_7 , GPIO_Mode_Out_PP_Low_Fast);
+     40          
+     41            /* TIM1 Break input pin configuration */
+     42            GPIO_Init(GPIOD, GPIO_Pin_6, GPIO_Mode_In_PU_No_IT);
+     43          
+     44          
+     45          }
+     46          
+     47          
+     48          void Motor_TIM_Config (void)
+     49          {
+     50            /* Time Base configuration */
+     51            TIM1_TimeBaseInit(TIM1_PRESCALER, TIM1_CounterMode_Up, TIM1_PERIOD, TIM1_REPTETION_COUNTER);
+     52          
+     53            /* Channels 1, 2 and 3 Configuration in TIMING mode */
+     54            TIM1_OC1Init(TIM1_OCMode_Timing, TIM1_OutputState_Enable, TIM1_OutputNState_Enable, CCR1_VAL,
+     55                         TIM1_OCPolarity_High, TIM1_OCNPolarity_High, TIM1_OCIdleState_Reset, TIM1_OCNIdleState_Reset);
+     56            TIM1_OC3Init(TIM1_OCMode_Timing, TIM1_OutputState_Enable, TIM1_OutputNState_Enable, CCR3_VAL,
+     57                         TIM1_OCPolarity_High, TIM1_OCNPolarity_High, TIM1_OCIdleState_Reset, TIM1_OCNIdleState_Reset);
+     58            
+     59            /* Automatic Output Enable, Break, dead time and lock configuration*/
+     60            TIM1_BDTRConfig(TIM1_OSSIState_Enable, TIM1_LockLevel_Off, DEADTIME,
+     61                            TIM1_BreakState_Enable, TIM1_BreakPolarity_Low, TIM1_AutomaticOutput_Disable);
+     62          
+     63            TIM1_CCPreloadControl(ENABLE);
+     64            TIM1_ITConfig(TIM1_IT_COM, ENABLE);
+     65            /* Main Output Enable */
+     66            TIM1_CtrlPWMOutputs(ENABLE);
+     67            /* TIM1 counter enable */
+     68            TIM1_Cmd(ENABLE);
+     69            
+     70          #if 1
+     71            
+     72            /* TIM4 Peripheral Configuration */
+     73            /* Time Base configuration */
+     74            //TIM4_TimeBaseInit(TIM4_Prescaler_128, TIM4_PERIOD);
+     75            TIM4_TimeBaseInit(TIM4_Prescaler_16, TIM4_PERIOD);
+     76            /* TIM4 update interrupt enable */
+     77            TIM4_ITConfig(TIM4_IT_Update, ENABLE);
+     78            /* TIM4 counter enable */
+     79            TIM4_Cmd(ENABLE);
+     80            
+     81          #endif
+     82          }
+     83          
+     84          void Motor_Init (void)
+     85          {
+     86            
+     87            Motor_CLK_Pin_init ();
+     88            
+     89            Motor_TIM_Config ();
+     90          
+     91          }
+     92          
+     93          void Motor_Forward_Direction (void)
+     94          {
+     95            if (step == 1)
+     96            {
+     97              /* Next step: Step 1 Configuration ---------------------------- */
+     98              /*  Channel1 configuration */
+     99              TIM1_SelectOCxM(TIM1_Channel_1, TIM1_OCMode_PWM1);
+    100              TIM1_CCxCmd(TIM1_Channel_1, ENABLE);
+    101              TIM1_CCxNCmd(TIM1_Channel_1, DISABLE);
+    102          
+    103              /*  Channel3 configuration */
+    104              TIM1_CCxCmd(TIM1_Channel_3, DISABLE);
+    105              TIM1_CCxNCmd(TIM1_Channel_3, DISABLE);
+    106              Delay(50); //1MS
+    107              step++;
+    108            }
+    109            else if (step == 2)
+    110            {
+    111              /* Next step: Step 2 Configuration ---------------------------- */
+    112              /*  Channel1 configuration */
+    113              TIM1_SelectOCxM(TIM1_Channel_1, TIM1_OCMode_PWM1);
+    114              TIM1_CCxCmd(TIM1_Channel_1, ENABLE);
+    115              TIM1_CCxNCmd(TIM1_Channel_1, ENABLE);
+    116          
+    117              /*  Channel3 configuration */
+    118              TIM1_CCxCmd(TIM1_Channel_3, DISABLE);
+    119              TIM1_CCxNCmd(TIM1_Channel_3, DISABLE);
+    120              Delay(50);
+    121              step++;
+    122            }
+    123            else if (step == 3)
+    124            {
+    125              /* Next step: Step 3 Configuration ---------------------------- */
+    126              /*  Channel1 configuration */
+    127              TIM1_SelectOCxM(TIM1_Channel_1, TIM1_OCMode_PWM1);
+    128              TIM1_CCxCmd(TIM1_Channel_1, DISABLE);
+    129              TIM1_CCxNCmd(TIM1_Channel_1, ENABLE);
+    130          
+    131              /*  Channel3 configuration */
+    132              TIM1_CCxCmd(TIM1_Channel_3, DISABLE);
+    133              TIM1_CCxNCmd(TIM1_Channel_3, DISABLE);
+    134              Delay(50);
+    135              step++;
+    136            }
+    137            else if (step == 4)
+    138            {
+    139              /* Next step: Step 4 Configuration ---------------------------- */
+    140              /*  Channel1 configuration */
+    141              TIM1_SelectOCxM(TIM1_Channel_1, TIM1_OCMode_PWM1);
+    142              TIM1_CCxCmd(TIM1_Channel_1, DISABLE);
+    143              TIM1_CCxNCmd(TIM1_Channel_1, ENABLE);
+    144          
+    145              /*  Channel3 configuration */
+    146              TIM1_SelectOCxM(TIM1_Channel_3, TIM1_OCMode_PWM1);
+    147              TIM1_CCxCmd(TIM1_Channel_3, ENABLE);
+    148              TIM1_CCxNCmd(TIM1_Channel_3, DISABLE);
+    149              Delay(50);
+    150              step++;
+    151            }
+    152            else if (step == 5)
+    153            {
+    154              /* Next step: Step 5 Configuration ---------------------------- */
+    155              /*  Channel1 configuration */
+    156              TIM1_CCxCmd(TIM1_Channel_1, DISABLE);
+    157              TIM1_CCxNCmd(TIM1_Channel_1, DISABLE);
+    158          
+    159              /*  Channel3 configuration */
+    160              TIM1_SelectOCxM(TIM1_Channel_3, TIM1_OCMode_PWM1);
+    161              TIM1_CCxCmd(TIM1_Channel_3, ENABLE);
+    162              TIM1_CCxNCmd(TIM1_Channel_3, DISABLE);
+    163              Delay(50);
+    164              step++;
+    165            }
+    166            else if (step == 6)
+    167            {
+    168              /* Next step: Step 6 Configuration ---------------------------- */
+    169              /*  Channel1 configuration */
+    170              
+    171              TIM1_CCxCmd(TIM1_Channel_1, ENABLE);
+    172              TIM1_CCxNCmd(TIM1_Channel_1, DISABLE);
+    173          
+    174              /*  Channel3 configuration */
+    175              TIM1_SelectOCxM(TIM1_Channel_3, TIM1_OCMode_PWM1);
+    176              TIM1_CCxCmd(TIM1_Channel_3, ENABLE);
+    177              TIM1_CCxNCmd(TIM1_Channel_3, ENABLE);
+    178              Delay(50);
+    179              step ++;
+    180            }
+    181            else if (step == 7)
+    182            {
+    183              /* Next step: Step 7 Configuration ---------------------------- */
+    184              /*  Channel1 configuration */
+    185              TIM1_CCxCmd(TIM1_Channel_1, DISABLE);
+    186              TIM1_CCxNCmd(TIM1_Channel_1, DISABLE);
+    187          
+    188              /*  Channel3 configuration */
+    189              TIM1_SelectOCxM(TIM1_Channel_3, TIM1_OCMode_PWM1);
+    190              TIM1_CCxCmd(TIM1_Channel_3, DISABLE);
+    191              TIM1_CCxNCmd(TIM1_Channel_3, ENABLE);
+    192              Delay(50);
+    193              step++;
+    194            }
+    195            else 
+    196            {
+    197              /* Next step: Step 8 Configuration ---------------------------- */
+    198              /*  Channel1 configuration */
+    199              TIM1_SelectOCxM(TIM1_Channel_1, TIM1_OCMode_PWM1);
+    200              TIM1_CCxCmd(TIM1_Channel_1, ENABLE);
+    201              TIM1_CCxNCmd(TIM1_Channel_1, DISABLE);
+    202          
+    203              /*  Channel3 configuration */
+    204              TIM1_SelectOCxM(TIM1_Channel_3, TIM1_OCMode_PWM1);
+    205              TIM1_CCxCmd(TIM1_Channel_3, DISABLE);
+    206              TIM1_CCxNCmd(TIM1_Channel_3, ENABLE);
+    207              Delay(50);
+    208              step = 1;
+    209            }
+    210          
+    211          }
+    212          
+    213          void Motor_Backward_Direction (void)
+    214          {
+    215            if (step == 1)
+    216            {
+    217              /* Next step: Step 1 Configuration ---------------------------- */
+    218              /*  Channel1 configuration */
+    219              TIM1_SelectOCxM(TIM1_Channel_1, TIM1_OCMode_PWM1);
+    220              TIM1_CCxCmd(TIM1_Channel_1, ENABLE);
+    221              TIM1_CCxNCmd(TIM1_Channel_1, DISABLE);
+    222          
+    223              /*  Channel3 configuration */
+    224              TIM1_CCxCmd(TIM1_Channel_3, DISABLE);
+    225              TIM1_CCxNCmd(TIM1_Channel_3, DISABLE);
+    226              Delay(50); //1MS
+    227              step++;
+    228            }
+    229            else if (step == 2)
+    230            {
+    231              /* Next step: Step 2 Configuration ---------------------------- */
+    232              /*  Channel1 configuration */
+    233              TIM1_SelectOCxM(TIM1_Channel_1, TIM1_OCMode_PWM1);
+    234              TIM1_CCxCmd(TIM1_Channel_1, ENABLE);
+    235              TIM1_CCxNCmd(TIM1_Channel_1, DISABLE);
+    236          
+    237              /*  Channel3 configuration */
+    238              TIM1_SelectOCxM(TIM1_Channel_3, TIM1_OCMode_PWM1);
+    239              TIM1_CCxCmd(TIM1_Channel_3, DISABLE);
+    240              TIM1_CCxNCmd(TIM1_Channel_3, ENABLE);
+    241              Delay(50);
+    242              step++;
+    243            }
+    244            else if (step == 3)
+    245            {
+    246              /* Next step: Step 3 Configuration ---------------------------- */
+    247              /*  Channel1 configuration */
+    248              TIM1_CCxCmd(TIM1_Channel_1, DISABLE);
+    249              TIM1_CCxNCmd(TIM1_Channel_1, DISABLE);
+    250          
+    251              /*  Channel3 configuration */
+    252              TIM1_SelectOCxM(TIM1_Channel_3, TIM1_OCMode_PWM1);
+    253              TIM1_CCxCmd(TIM1_Channel_3, DISABLE);
+    254              TIM1_CCxNCmd(TIM1_Channel_3, ENABLE);
+    255              Delay(50);
+    256              step++;
+    257            }
+    258            else if (step == 4)
+    259            {
+    260              /* Next step: Step 4 Configuration ---------------------------- */
+    261              /*  Channel1 configuration */
+    262              TIM1_CCxCmd(TIM1_Channel_1, DISABLE);
+    263              TIM1_CCxNCmd(TIM1_Channel_1, DISABLE);
+    264          
+    265              /*  Channel3 configuration */
+    266              TIM1_SelectOCxM(TIM1_Channel_3, TIM1_OCMode_PWM1);
+    267              TIM1_CCxCmd(TIM1_Channel_3, ENABLE);
+    268              TIM1_CCxNCmd(TIM1_Channel_3, ENABLE);
+    269              
+    270              Delay(50);
+    271              step++;
+    272            }
+    273            else if (step == 5)
+    274            {
+    275              /* Next step: Step 5 Configuration ---------------------------- */
+    276              /*  Channel1 configuration */
+    277              TIM1_CCxCmd(TIM1_Channel_1, DISABLE);
+    278              TIM1_CCxNCmd(TIM1_Channel_1, DISABLE);
+    279          
+    280              /*  Channel3 configuration */
+    281              TIM1_SelectOCxM(TIM1_Channel_3, TIM1_OCMode_PWM1);
+    282              TIM1_CCxCmd(TIM1_Channel_3, ENABLE);
+    283              TIM1_CCxNCmd(TIM1_Channel_3, DISABLE);
+    284              Delay(50);
+    285              step++;
+    286            }
+    287            else if (step == 6)
+    288            {
+    289              /* Next step: Step 6 Configuration ---------------------------- */
+    290              /*  Channel1 configuration */
+    291              TIM1_SelectOCxM(TIM1_Channel_1, TIM1_OCMode_PWM1);
+    292              TIM1_CCxCmd(TIM1_Channel_1, DISABLE);
+    293              TIM1_CCxNCmd(TIM1_Channel_1, ENABLE);
+    294          
+    295              /*  Channel3 configuration */
+    296              TIM1_SelectOCxM(TIM1_Channel_3, TIM1_OCMode_PWM1);
+    297              TIM1_CCxCmd(TIM1_Channel_3, ENABLE);
+    298              TIM1_CCxNCmd(TIM1_Channel_3, DISABLE);
+    299              
+    300              Delay(50);
+    301              step ++;
+    302            }
+    303            else if (step == 7)
+    304            {
+    305              /* Next step: Step 7 Configuration ---------------------------- */
+    306              /*  Channel1 configuration */
+    307              TIM1_SelectOCxM(TIM1_Channel_1, TIM1_OCMode_PWM1);
+    308              TIM1_CCxCmd(TIM1_Channel_1, DISABLE);
+    309              TIM1_CCxNCmd(TIM1_Channel_1, ENABLE);
+    310          
+    311              /*  Channel3 configuration */
+    312              TIM1_CCxCmd(TIM1_Channel_3, DISABLE);
+    313              TIM1_CCxNCmd(TIM1_Channel_3, DISABLE);
+    314              Delay(50);
+    315              step++;
+    316            }
+    317            else 
+    318            {
+    319              /* Next step: Step 8 Configuration ---------------------------- */
+    320              /*  Channel1 configuration */
+    321              TIM1_SelectOCxM(TIM1_Channel_1, TIM1_OCMode_PWM1);
+    322              TIM1_CCxCmd(TIM1_Channel_1, ENABLE);
+    323              TIM1_CCxNCmd(TIM1_Channel_1, ENABLE);
+    324          
+    325              /*  Channel3 configuration */
+    326              TIM1_CCxCmd(TIM1_Channel_3, DISABLE);
+    327              TIM1_CCxNCmd(TIM1_Channel_3, DISABLE);
+    328              Delay(50);
+    329              step = 1;
+    330          
+    331            }
+    332          }
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+     572  Motor_Backward_Direction
+      46  Motor_CLK_Pin_init
+     574  Motor_Forward_Direction
+       4  Motor_Init
+     134  Motor_TIM_Config
+
+ 
+ 1 330 bytes in section .far_func.text
+ 
+ 1 330 bytes of CODE memory
+
+Errors: none
+Warnings: none
